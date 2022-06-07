@@ -1,0 +1,16 @@
+body {
+  background: linear-gradient(123deg, #38034b 24.33%, #250430 84.69%);
+  margin: 0;
+  padding: 15px;
+  min-height: 100vh;
+  width: 100%;
+  font-family: "Lato", sans-serif;
+
+  @media (max-width: 768px) {
+    padding: 15px;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
