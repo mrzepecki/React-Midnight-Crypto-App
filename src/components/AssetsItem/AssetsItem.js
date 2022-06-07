@@ -2,31 +2,33 @@ import AssetsValue from "../AssetsValue/AssetsValue";
 import "./AssetsItem.scss";
 import { XYPlot, LineSeries } from "react-vis";
 import "../../../node_modules/react-vis/dist/style.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const AssetsItem = (props) => {
+  const [chartData, setChartData] = useState([]);
   let price = parseFloat(props.price).toFixed(2);
 
-  const [chartData, setChartData] = useState([]);
-
-  console.log(props.showCharts);
-
-  if (props.showCharts) {
+  async function getChartData() {
     const start = Date.now() - 3600 * 1000 * 24;
     const end = Date.now();
-    fetch(
-      `https://api.coincap.io/v2/assets/${props.id}/history?interval=h1&start=${start}&end=${end}`
-    )
+    const url = `https://api.coincap.io/v2/assets/${props.id}/history?interval=h1&start=${start}&end=${end}`;
+
+    await fetch(url, {})
       .then((response) => response.json())
       .then((data) => {
-        setChartData(
-          data.data.map((item) => {
-            return { y: item.priceUsd, x: item.time };
-          })
-        );
+        let formattedChartData = data.data.map((item) => {
+          return { y: item.priceUsd, x: item.time };
+        });
+        setChartData(formattedChartData);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.warn(err));
   }
+
+  useEffect(() => {
+    if (props.showCharts) {
+      getChartData();
+    }
+  }, [props.showCharts]);
 
   return (
     <div className="assets-item">
